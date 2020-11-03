@@ -1,8 +1,11 @@
 package mimly.userlogin.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configurers.provisioning.JdbcUserDetailsManagerConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -11,19 +14,27 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
 
+import javax.sql.DataSource;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Autowired
+    private Environment environment;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable();
+        if (Arrays.asList(environment.getActiveProfiles()).contains("test"))
+            http.csrf().disable();
 
         http.authorizeRequests()
+                .antMatchers("/h2-console/**").permitAll()
                 .antMatchers("/login").permitAll()
                 .antMatchers("/registration").permitAll()
                 .anyRequest().authenticated()
@@ -42,9 +53,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(inMemoryUserDetailsManager());
-//        auth.inMemoryAuthentication()
-//                .withUser("mimly").password(passwordEncoder().encode("mimly")).roles("USER");
+//        auth.userDetailsService(inMemoryUserDetailsManager());
+        auth.userDetailsService(jdbcUserDetailsManager());
+        JdbcUserDetailsManagerConfigurer<AuthenticationManagerBuilder> conf =
+                new JdbcUserDetailsManagerConfigurer<>(jdbcUserDetailsManager());
+        auth.apply(conf);
+        conf.dataSource(dataSource)
+                .withDefaultSchema().passwordEncoder(passwordEncoder())
+                .withUser("mimly")
+                .password(passwordEncoder().encode("mimly"))
+                .roles("USER");
+    }
+
+    @Autowired
+    private DataSource dataSource;
+
+    @Bean
+    public JdbcUserDetailsManager jdbcUserDetailsManager() {
+        return new JdbcUserDetailsManager(dataSource);
     }
 
     @Bean

@@ -31,7 +31,7 @@ public class RegistrationController {
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public RegistrationController(UserDetailsManager userDetailsManager, PasswordEncoder passwordEncoder) {
+    public RegistrationController(@Qualifier("jdbcUserDetailsManager") UserDetailsManager userDetailsManager, PasswordEncoder passwordEncoder) {
         this.userDetailsManager = userDetailsManager;
         this.passwordEncoder = passwordEncoder;
     }

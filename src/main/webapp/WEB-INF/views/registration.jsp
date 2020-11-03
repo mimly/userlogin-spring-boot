@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
-  <title>Please sign upp</title>
+  <title>Please sign up</title>
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
   <link href="https://getbootstrap.com/docs/4.0/examples/signin/signin.css" rel="stylesheet" crossorigin="anonymous"/>
 </head>
@@ -15,7 +15,7 @@
   <a href="/registration" class="btn btn-secondary btn-sm active" role="button" aria-pressed="true">Registration</a>
   <div class="container">
     <form class="form-signin" method="post" action="/registration">
-      <h2 class="form-signin-heading">Please sign upp</h2>
+      <h2 class="form-signin-heading">Please sign up</h2>
       <c:if test = "${param.error != null}">
         <div class="alert alert-danger" role="alert"><c:out value = "${param.error}"/></div>
       </c:if>
@@ -34,7 +34,8 @@
         <label for="confirm" class="sr-only">Confirm</label>
         <input type="password" id="confirm" name="confirm" class="form-control" placeholder="Confirm" required>
       </p>
-      <button class="btn btn-lg btn-outline-primary btn-block" type="submit">Sign upp</button>
+      <button class="btn btn-lg btn-outline-primary btn-block" type="submit">Sign up</button>
+      <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
     </form>
   </div>
 </body>

@@ -25,7 +25,7 @@ public class RegistrationDTO {
         return this.password.equals(this.confirm);
     }
 
-    @AssertTrue(message = "Password didn't contain any number")
+    @AssertTrue(message = "Password must contain at least one digit")
     public boolean isAnyDigitPresent() {
         if (this.password == null) return true;
         return this.password.matches(".*\\d.*");
