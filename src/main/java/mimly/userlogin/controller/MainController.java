@@ -5,8 +5,11 @@ import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.security.Principal;
 
 @Controller
 @RequestMapping("/")
@@ -41,7 +44,8 @@ public class MainController {
     }
 
     @GetMapping("/index")
-    public String getIndex() {
+    public String getIndex(Model model, Principal principal) {
+        model.addAttribute("username", principal.getName());
         return "index";
     }
 }

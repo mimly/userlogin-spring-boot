@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -11,17 +10,13 @@
   <link href="https://getbootstrap.com/docs/4.0/examples/signin/signin.css" rel="stylesheet" crossorigin="anonymous"/>
 </head>
 <body>
-  <a href="/login" class="btn btn-secondary btn-sm active" role="button" aria-pressed="true">Login</a>
-  <a href="/registration" class="btn btn-secondary btn-sm active" role="button" aria-pressed="true">Registration</a>
+  <a th:href="@{/login}" class="btn btn-secondary btn-sm active" role="button" aria-pressed="true">Login</a>
+  <a th:href="@{/registration}" class="btn btn-secondary btn-sm active" role="button" aria-pressed="true">Registration</a>
   <div class="container">
-    <form class="form-signin" method="post" action="/login">
+    <form class="form-signin" method="post" th:action="@{/login}">
       <h2 class="form-signin-heading">Please sign in</h2>
-      <c:if test = "${param.error != null}">
-        <div class="alert alert-danger" role="alert"><c:out value = "${param.error}"/></div>
-      </c:if>
-      <c:if test = "${param.success != null}">
-        <div class="alert alert-success" role="alert"><c:out value = "${param.success}"/></div>
-      </c:if>
+      <div class="alert alert-danger" role="alert" th:if="${param.error != null}" th:text="${param.error}"></div>
+      <div class="alert alert-success" role="alert" th:if="${param.success != null}" th:text="${param.success}"></div>
       <p>
         <label for="username" class="sr-only">Username</label>
         <input type="text" id="username" name="username" class="form-control" placeholder="Username" required autofocus>
@@ -31,7 +26,7 @@
         <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
       </p>
       <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-      <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
     </form>
   </div>
 </body>
