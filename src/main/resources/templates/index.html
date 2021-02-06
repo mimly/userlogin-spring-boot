@@ -20,35 +20,5 @@
         </form>
     </div>
 </div>
-<script src="stomp.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
-<script>
-        const onSessionExpired = () => {
-          window.location.assign('http://localhost:8989');
-        };
-
-        const sockJS = new SockJS('/ws-api/v1');
-        const socket = Stomp.over(sockJS);
-        socket.heartbeat.outgoing = 0;
-        socket.heartbeat.incoming = 60000;
-
-        socket.connect(
-          {},
-          () => {
-            socket.subscribe('/user/queue/ws-api/v1/session-expired', (message) => {
-              onSessionExpired();
-              message.ack();
-            }, { ack: 'client-individual' });
-          },
-          () => new Error('Something went wrong!'),
-        );
-
-        sockJS.onclose = onSessionExpired;
-
-        window.onbeforeunload = () => {
-          sockJS.onclose = function () {}; // disable onclose handler first
-          sockJS.close();
-        };
-</script>
 </body>
 </html>
