@@ -1,59 +1,66 @@
 package mimly.userlogin.config;
 
+import mimly.userlogin.controller.RoutingMiddleware;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configurers.provisioning.JdbcUserDetailsManagerConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.security.web.session.SessionManagementFilter;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private Environment environment;
+    @Value("${spring.profiles.active}")
+    private String activeProfile;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        if (Arrays.asList(environment.getActiveProfiles()).contains("test"))
+        if (activeProfile.equalsIgnoreCase("test")) {
             http.csrf().disable();
+        }
+
+        http.sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                .invalidSessionUrl("/login?error=Session expired");
 
         http.authorizeRequests()
-                .antMatchers("/h2-console/**").permitAll()
-                .antMatchers("/login").permitAll()
-                .antMatchers("/registration").permitAll()
+                .antMatchers("/login").anonymous()
+                .antMatchers("/registration").anonymous()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
                 .failureUrl("/login?error=Bad credentials")
-                .defaultSuccessUrl("/index", true)
+                .defaultSuccessUrl("/", true)
                 .and()
                 .logout()
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/login?success=Signed out successfully")
-                .deleteCookies("JSESSIONID");
+                .deleteCookies("SESSION")
+                .and()
+                .addFilterAfter(routingMiddleware(), SessionManagementFilter.class);
+    }
+
+    @Bean
+    public RoutingMiddleware routingMiddleware() {
+        return new RoutingMiddleware();
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.userDetailsService(inMemoryUserDetailsManager());
         auth.userDetailsService(jdbcUserDetailsManager());
         JdbcUserDetailsManagerConfigurer<AuthenticationManagerBuilder> conf =
                 new JdbcUserDetailsManagerConfigurer<>(jdbcUserDetailsManager());
@@ -71,19 +78,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public JdbcUserDetailsManager jdbcUserDetailsManager() {
         return new JdbcUserDetailsManager(dataSource);
-    }
-
-    @Bean
-    public InMemoryUserDetailsManager inMemoryUserDetailsManager() {
-        List<UserDetails> userDetailsList = new ArrayList<>();
-        userDetailsList.add(User
-                .withUsername("mimly")
-                .password(passwordEncoder().encode("mimly"))
-                .roles("USER")
-                .build()
-        );
-
-        return new InMemoryUserDetailsManager(userDetailsList);
     }
 
     @Bean
