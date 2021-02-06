@@ -1,7 +1,7 @@
 package mimly.userlogin;
 
 import mimly.userlogin.controller.LoginController;
-import mimly.userlogin.controller.MainController;
+import mimly.userlogin.controller.HomeController;
 import mimly.userlogin.controller.RegistrationController;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ class UserloginApplicationTests {
     private LoginController loginController;
 
     @Autowired
-    private MainController mainController;
+    private HomeController homeController;
 
     @Autowired
     private RegistrationController registrationController;
@@ -24,7 +24,7 @@ class UserloginApplicationTests {
     @Test
     void contextLoads() {
         assertThat(loginController).isNotNull();
-        assertThat(mainController).isNotNull();
+        assertThat(homeController).isNotNull();
         assertThat(registrationController).isNotNull();
     }
 }
