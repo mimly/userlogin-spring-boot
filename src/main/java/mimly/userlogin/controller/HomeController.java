@@ -16,7 +16,7 @@ public class HomeController {
 
     @GetMapping
     public String getIndex(HttpSession httpSession, Model model, Principal principal) {
-        httpSession.setMaxInactiveInterval(10);
+        httpSession.setMaxInactiveInterval(principal.getName().equals("mimly") ? -1 : 10);
         model.addAttribute("username", principal.getName());
         return "index";
     }

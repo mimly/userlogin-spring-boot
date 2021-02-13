@@ -9,6 +9,7 @@ public class RegistrationDTO {
 
     @NotNull
     @NotEmpty
+    @Size(min = 3, max = 32)
     String username;
     @NotNull
     @NotEmpty

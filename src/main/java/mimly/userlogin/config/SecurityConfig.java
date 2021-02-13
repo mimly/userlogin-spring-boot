@@ -1,6 +1,7 @@
 package mimly.userlogin.config;
 
 import mimly.userlogin.controller.RoutingMiddleware;
+import mimly.userlogin.controller.XSSFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +15,10 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter;
+import org.springframework.security.web.header.HeaderWriterFilter;
 import org.springframework.security.web.session.SessionManagementFilter;
+import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
 import javax.sql.DataSource;
 
@@ -36,6 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .invalidSessionUrl("/login?error=Session expired");
 
         http.authorizeRequests()
+                .antMatchers("/actuator/**").hasRole("ADMIN")
                 .antMatchers("/login").anonymous()
                 .antMatchers("/registration").anonymous()
                 .anyRequest().authenticated()
@@ -51,7 +56,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessUrl("/login?success=Signed out successfully")
                 .deleteCookies("SESSION")
                 .and()
+                .addFilterBefore(XSSFilter(), WebAsyncManagerIntegrationFilter.class)
+                .addFilterBefore(commonsRequestLoggingFilter(), HeaderWriterFilter.class)
                 .addFilterAfter(routingMiddleware(), SessionManagementFilter.class);
+    }
+
+    @Bean
+    public XSSFilter XSSFilter() {
+        return new XSSFilter();
+    }
+
+    @Bean
+    public CommonsRequestLoggingFilter commonsRequestLoggingFilter() {
+        CommonsRequestLoggingFilter commonsRequestLoggingFilter = new CommonsRequestLoggingFilter();
+        commonsRequestLoggingFilter.setIncludeClientInfo(true);
+        commonsRequestLoggingFilter.setIncludeQueryString(true);
+        commonsRequestLoggingFilter.setIncludePayload(true);
+        commonsRequestLoggingFilter.setMaxPayloadLength(256);
+        commonsRequestLoggingFilter.setIncludeHeaders(false);
+        return commonsRequestLoggingFilter;
     }
 
     @Bean
@@ -69,7 +92,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .withDefaultSchema().passwordEncoder(passwordEncoder())
                 .withUser("mimly")
                 .password(passwordEncoder().encode("mimly"))
-                .roles("USER");
+                .roles("ADMIN");
     }
 
     @Autowired
