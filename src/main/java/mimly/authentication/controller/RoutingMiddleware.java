@@ -1,4 +1,4 @@
-package mimly.userlogin.controller;
+package mimly.authentication.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -23,7 +23,7 @@ public class RoutingMiddleware extends GenericFilterBean {
         authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).forEach(log::error);
         String uri = httpServletRequest.getRequestURI();
         if (authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).anyMatch("ROLE_USER"::equals)
-                && !uri.matches("(/|/ws-api/v1(/.*)?|/stomp\\.min\\.js)")) {
+                && !uri.matches("(/|/ws/v1(/.*)?|/stomp\\.min\\.js)")) {
             httpServletResponse.sendRedirect("/");
             return;
         }

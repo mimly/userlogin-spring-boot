@@ -1,4 +1,4 @@
-package mimly.userlogin.config;
+package mimly.authentication.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -13,7 +13,7 @@ import org.springframework.web.socket.server.support.HttpSessionHandshakeInterce
 @EnableWebSocketMessageBroker
 public class WebSocketConfig extends AbstractSessionWebSocketMessageBrokerConfigurer<Session> {
 
-    public static final String WS_APIv1 = "/ws-api/v1";
+    public static final String WS_APIv1 = "/ws/v1";
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {

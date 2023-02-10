@@ -1,11 +1,11 @@
-package mimly.userlogin.model;
+package mimly.authentication.model;
 
 import lombok.Value;
 
 import javax.validation.constraints.*;
 
 @Value
-public class RegistrationDTO {
+public class RegisterDTO {
 
     @NotNull
     @NotEmpty

@@ -1,7 +1,7 @@
-package mimly.userlogin.config;
+package mimly.authentication.config;
 
-import mimly.userlogin.controller.RoutingMiddleware;
-import mimly.userlogin.controller.XSSFilter;
+import mimly.authentication.controller.RoutingMiddleware;
+import mimly.authentication.controller.XSSFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -42,7 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/actuator/**").hasRole("ADMIN")
                 .antMatchers("/login").anonymous()
-                .antMatchers("/registration").anonymous()
+                .antMatchers("/register").anonymous()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()

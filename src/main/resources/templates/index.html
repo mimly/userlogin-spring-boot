@@ -13,7 +13,7 @@
 <body>
 <div class="container">
     <div class="col-12 text-center">
-        <form method="post" th:action="@{/logout}">
+        <form method="post" th:action="@{logout}">
             <div class="h4 font-weight-bold">Hello <span class="font-italic font-weight-light" th:text="${username}"/>!</div>
             <button class="btn btn-sm btn-danger" type="submit">Sign out</button>
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
@@ -23,22 +23,22 @@
 <script src="stomp.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
 <script>
-        const onSessionExpired = () => {
-          window.location.assign(window.location.origin);
-        };
+    const onSessionExpired = () => {
+        window.location.assign(window.location.origin);
+    };
 
-        const sockJS = new SockJS('/ws-api/v1');
-        const socket = Stomp.over(sockJS);
-        socket.heartbeat.outgoing = 0;
-        socket.heartbeat.incoming = 60000;
+    const sockJS = new SockJS('/ws/v1');
+    const socket = Stomp.over(sockJS);
+    socket.heartbeat.outgoing = 0;
+    socket.heartbeat.incoming = 60000;
 
-        // headers, onConnect, onError, onClose
-        socket.connect({}, undefined, undefined, onSessionExpired);
+    // headers, onConnect, onError, onClose
+    socket.connect({}, undefined, undefined, onSessionExpired);
 
-        window.onbeforeunload = () => {
-          sockJS.onclose = function () {}; // disable onclose handler first
-          sockJS.close();
-        };
+    window.onbeforeunload = () => {
+        sockJS.onclose = function () {}; // disable onclose handler first
+        sockJS.close();
+    };
 </script>
 </body>
 </html>

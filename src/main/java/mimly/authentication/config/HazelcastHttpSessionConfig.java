@@ -1,4 +1,4 @@
-package mimly.userlogin.config;
+package mimly.authentication.config;
 
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;

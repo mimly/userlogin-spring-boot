@@ -1,4 +1,4 @@
-package mimly.userlogin.controller;
+package mimly.authentication.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;

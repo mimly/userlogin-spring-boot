@@ -14,13 +14,13 @@
 <div class="container">
     <div class="row">
         <div class="col-12 text-center">
-            <a th:href="@{/login}" class="btn btn-secondary btn-sm active" role="button" aria-pressed="true">Login</a>
-            <a th:href="@{/registration}" class="btn btn-secondary btn-sm active" role="button" aria-pressed="true">Registration</a>
+            <a th:href="@{login}" class="btn btn-secondary btn-sm active" role="button" aria-pressed="true">Login</a>
+            <a th:href="@{register}" class="btn btn-secondary btn-sm active" role="button" aria-pressed="true">Register</a>
         </div>
     </div>
     <div class="row">
         <div class="col-12 text-center mt-4">
-            <form class="form-signin" method="post" th:action="@{/login}">
+            <form class="form-signin" method="post" th:action="@{login}">
                 <h2 class="form-signin-heading">Please sign in</h2>
                 <div class="alert alert-danger" role="alert" th:if="${param.error != null}"
                      th:text="${param.error}"></div>

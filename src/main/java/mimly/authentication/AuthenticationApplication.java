@@ -1,12 +1,12 @@
-package mimly.userlogin;
+package mimly.authentication;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class UserloginApplication {
+public class AuthenticationApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(UserloginApplication.class, args);
+        SpringApplication.run(AuthenticationApplication.class, args);
     }
 }
